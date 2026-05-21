@@ -1,5 +1,8 @@
-plugins { id "com.android.application" }
+plugins {
+    id "com.android.application"
+}
 android {
+    namespace "com.build.smartcalc"
     compileSdk 34
     defaultConfig {
         applicationId "com.build.smartcalc"
