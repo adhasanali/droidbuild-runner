@@ -12,11 +12,9 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build With Gradle
+    - name: Setup Gradle Wrapper (Bypassing Missing Gradlew)
+      run: gradle wrapper
+    - name: Build With Local Gradlew
       run: ./gradlew assembleDebug bundleRelease
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
