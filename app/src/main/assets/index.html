@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>স্মার্ট কনস্ট্রাকশন ক্যালকুলেটর</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 font-sans selection:bg-orange-500/30">
+
+    <div class="max-w-md mx-auto space-y-4 pb-10">
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-md text-center">
+            <h1 class="text-lg font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">Construction Smart Calculator</h1>
+            <p class="text-[11px] text-slate-400 mt-0.5">ইউনিট কনভার্সন ও ম্যাটেরিয়ালস ক্যালকুলেটর</p>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-orange-400 flex items-center gap-1">🧱 ইটের গাঁথুনির হিসাব</h2>
+                <select id="brick-unit" class="bg-slate-950 border border-slate-800 rounded px-2 py-0.5 text-[10px] text-slate-300 font-mono outline-none cursor-pointer">
+                    <option value="ft">ফুট (Feet)</option>
+                    <option value="m">মিটার (Meter)</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-xs">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">দেয়ালের দৈর্ঘ্য</label>
+                    <input type="number" id="b-length" placeholder="10" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none text-slate-100" />
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">দেয়ালের উচ্চতা</label>
+                    <input type="number" id="b-height" placeholder="10" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none text-slate-100" />
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">গাঁথুনির পুরুত্ব</label>
+                    <select id="b-thick" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none text-slate-300 cursor-pointer">
+                        <option value="5">৫ ইঞ্চি দেয়াল</option>
+                        <option value="10">১০ ইঞ্চি দেয়াল</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="calculateBricks()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs py-2 rounded-lg shadow transition cursor-pointer text-center">🧱 হিসাব করুন</button>
+            <div id="brick-result" class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-300 hidden space-y-0.5"></div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1">📐 রডের ওজনের হিসাব</h2>
+                <select id="rod-len-unit" class="bg-slate-950 border border-slate-800 rounded px-2 py-0.5 text-[10px] text-slate-300 font-mono outline-none cursor-pointer">
+                    <option value="ft">ফুট (Feet)</option>
+                    <option value="m">মিটার (Meter)</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">রডের সাইজ (Diameter)</label>
+                    <select id="rod-dia" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none text-slate-300 font-mono cursor-pointer">
+                        <option value="8">8 mm</option>
+                        <option value="10">10 mm</option>
+                        <option value="12" selected>12 mm</option>
+                        <option value="16">16 mm</option>
+                        <option value="20">20 mm</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">মোট দৈর্ঘ্য (Total Length)</label>
+                    <input type="number" id="rod-length" placeholder="100" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none text-slate-100 font-mono" />
+                </div>
+            </div>
+            <button onclick="calculateRod()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs py-2 rounded-lg shadow transition cursor-pointer text-center">📐 ওজন বের করুন</button>
+            <div id="rod-result" class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-300 font-mono hidden"></div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1">🪵 কাঠের সিএফটি (CFT) ক্যালকুলেটর</h2>
+                <span class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">Round Log &amp; Sawn Wood</span>
+            </div>
+            <div class="flex bg-slate-950 p-1 rounded-lg border border-slate-800 text-[11px] font-bold">
+                <button id="tab-round" onclick="switchWoodTab('round')" class="flex-1 text-center py-1 rounded bg-slate-800 text-emerald-400 cursor-pointer">গোল কাঠ</button>
+                <button id="tab-sawn" onclick="switchWoodTab('sawn')" class="flex-1 text-center py-1 rounded text-slate-500 hover:text-slate-300 cursor-pointer">চিরানো কাঠ</button>
+            </div>
+
+            <div id="form-wood-round" class="space-y-2 text-xs">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">বেড়/গোলাই (ইঞ্চি)</label>
+                        <input type="number" id="w-girth" placeholder="৪৮" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none text-slate-100" />
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">লম্বা/উচ্চতা (ফুট)</label>
+                        <input type="number" id="w-round-len" placeholder="১২" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none text-slate-100" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="form-wood-sawn" class="space-y-2 text-xs hidden">
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">পুরুত্ব (ইঞ্চি)</label>
+                        <input type="number" id="w-thick" placeholder="১.৫" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none text-slate-100" />
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">চওড়া/পাশ (ইঞ্চি)</label>
+                        <input type="number" id="w-width" placeholder="৫" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none text-slate-100" />
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">লম্বা (ফুট)</label>
+                        <input type="number" id="w-sawn-len" placeholder="১০" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none text-slate-100" />
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="calculateWood()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2 rounded-lg shadow transition cursor-pointer text-center">🪵 CFT হিসাব করুন</button>
+            <div id="wood-result" class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-300 hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        let activeWoodTab = 'round';
+
+        function switchWoodTab(type) {
+            activeWoodTab = type;
+            const tabR = document.getElementById('tab-round');
+            const tabS = document.getElementById('tab-sawn');
+            const formR = document.getElementById('form-wood-round');
+            const formS = document.getElementById('form-wood-sawn');
+
+            if (type === 'round') {
+                tabR.className = "flex-1 text-center py-1 rounded bg-slate-800 text-emerald-400 cursor-pointer";
+                tabS.className = "flex-1 text-center py-1 rounded text-slate-500 hover:text-slate-300 cursor-pointer";
+                formR.classList.remove('hidden'); formS.classList.add('hidden');
+            } else {
+                tabS.className = "flex-1 text-center py-1 rounded bg-slate-800 text-emerald-400 cursor-pointer";
+                tabR.className = "flex-1 text-center py-1 rounded text-slate-500 hover:text-slate-300 cursor-pointer";
+                formS.classList.remove('hidden'); formR.classList.add('hidden');
+            }
+        }
+
+        // ইট গণনা লজিক (৫ ইঞ্চি ও ১০ ইঞ্চি দেয়াল কনভার্সনসহ)
+        function calculateBricks() {
+            let length = parseFloat(document.getElementById('b-length').value) || 0;
+            let height = parseFloat(document.getElementById('b-height').value) || 0;
+            const unit = document.getElementById('brick-unit').value;
+            const thick = parseInt(document.getElementById('b-thick').value);
+
+            if (unit === 'm') {
+                length = length * 3.28084;
+                height = height * 3.28084;
+            }
+
+            const totalAreaStr = (length * height).toFixed(2);
+            let totalBricks = 0;
+
+            if (thick === 5) {
+                totalBricks = Math.ceil(length * height * 5);
+            } else {
+                totalBricks = Math.ceil(length * height * 10);
+            }
+
+            const res = document.getElementById('brick-result');
+            res.classList.remove('hidden');
+            res.innerHTML = `
+                <p class="text-orange-400 font-bold">📋 গাঁথুনির ফলাফল:</p>
+                <p>• মোট দেয়ালের ক্ষেত্রফল: <b>${totalAreaStr} Sq.Ft.</b></p>
+                <p>• মোট প্রয়োজনীয় ইট: <b class="text-white text-xs bg-orange-950/60 px-1 py-0.5 rounded border border-orange-900/40">${totalBricks} টি</b> (৫% অপচয় ব্যতীত)</p>
+            `;
+        }
+
+        // রডের ওজনের সূত্র লজিক: D^2 / 533 (ফুট) এবং D^2 / 162.2 (মিটার)
+        function calculateRod() {
+            const dia = parseFloat(document.getElementById('rod-dia').value);
+            const length = parseFloat(document.getElementById('rod-length').value) || 0;
+            const unit = document.getElementById('rod-len-unit').value;
+            let weight = 0;
+
+            if (unit === 'ft') {
+                weight = ((dia * dia) / 533) * length;
+            } else {
+                weight = ((dia * dia) / 162.2) * length;
+            }
+
+            const res = document.getElementById('rod-result');
+            res.classList.remove('hidden');
+            res.innerHTML = `
+                <p class="text-amber-400 font-bold">📋 রডের ওজন:</p>
+                <p>• সাইজ: <b>${dia} mm</b> | মোট দৈর্ঘ্য: <b>${length} ${unit === 'ft' ? 'ফুট' : 'মিটার'}</b></p>
+                <p>• মোট ওজন: <b class="text-white text-xs bg-amber-950/60 px-1 py-0.5 rounded border border-amber-900/40">${weight.toFixed(2)} Kg</b></p>
+            `;
+        }
+
+        // কাঠের সিএফটি হিসাব লজিক (গোল কাঠ সূত্র: (গোলাই/৪)^২ * দৈর্ঘ্য / ১৪৪)
+        function calculateWood() {
+            let resultText = "";
+            if (activeWoodTab === 'round') {
+                const girth = parseFloat(document.getElementById('w-girth').value) || 0;
+                const len = parseFloat(document.getElementById('w-round-len').value) || 0;
+                if (girth > 0 && len > 0) {
+                    const cft = ((girth / 4) * (girth / 4) * len) / 144;
+                    resultText = `
+                        <p class="text-emerald-400 font-bold">📋 গোল কাঠের সিএফটি:</p>
+                        <p>• মোট আয়তন: <b class="text-white text-xs bg-emerald-950/60 px-1 py-0.5 rounded border border-emerald-900/40">${cft.toFixed(2)} CFT</b></p>
+                    `;
+                }
+            } else {
+                const thick = parseFloat(document.getElementById('w-thick').value) || 0;
+                const width = parseFloat(document.getElementById('w-width').value) || 0;
+                const len = parseFloat(document.getElementById('w-sawn-len').value) || 0;
+                if (thick > 0 && width > 0 && len > 0) {
+                    const cft = (thick * width * len) / 12;
+                    resultText = `
+                        <p class="text-emerald-400 font-bold">📋 চিরানো কাঠের সিএফটি:</p>
+                        <p>• মোট আয়তন: <b class="text-white text-xs bg-emerald-950/60 px-1 py-0.5 rounded border border-emerald-900/40">${cft.toFixed(2)} CFT</b></p>
+                    `;
+                }
+            }
+
+            const res = document.getElementById('wood-result');
+            if (resultText !== "") {
+                res.classList.remove('hidden');
+                res.innerHTML = resultText;
+            }
+        }
+    </script>
+</body>
+</html>
