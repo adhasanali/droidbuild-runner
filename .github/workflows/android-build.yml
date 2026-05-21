@@ -1,7 +1,7 @@
 name: Android Play Store (APK & AAB) Build
 on:
   push:
-    branches: [ main, master%20]
+    branches: [ main, master ]
 jobs:
   build:
     runs-on: ubuntu-latest
